@@ -1,30 +1,24 @@
 <?php
 session_start();
 
-require_once '../modele/Utilisateur.php';
 require_once '../controleur/RechercheUtilisateur.php';
-
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nom = $_POST['nom'];
     $prenom = $_POST['prenom'];
-    $mdp = sha1($_POST['mdp']);
+    $mdp = ($_POST['mdp']); // Notez que l'API pourrait gérer le hachage elle-même
 
+    $controleur = new RechercheUtilisateur($nom, $prenom, $mdp);
+    $authenticated = $controleur->executer();
 
-    $utilisateur = new RechercheUtilisateur( $nom, $prenom, $mdp);
-    $utilisateur= $utilisateur->executer();
-
-
-    if(!$utilisateur){
-        $error = 'Nom, prenom ou mot de passe incorrect';
+    if(!$authenticated){
+        $error = 'Nom, prénom ou mot de passe incorrect';
     }
     else{
         $_SESSION['authenticated'] = true;
         header('Location: index.php');
         exit;
     }
-
 }
 ?>
 
