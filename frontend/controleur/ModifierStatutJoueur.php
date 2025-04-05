@@ -1,4 +1,6 @@
 <?php
+require_once '../vue/session/session_timeout.php';
+require_once 'check_auth.php';
 
 class ModifierStatutJoueur {
     private $licence;
@@ -9,8 +11,8 @@ class ModifierStatutJoueur {
     {
         $this->licence = $licence;
         $this->statut = $statut;
-        $this->apiUrl = "http://localhost/club_basket_back-end/back-end/endpoint/JoueurEndpoint.php?licence=" . $licence;
-    }
+        $this->apiUrl = "https://clubbasketbackend.alwaysdata.net/back-end/endpoint/JoueurEndpoint.php?licence=" . $licence;
+            }
 
     public function executer() {
         // Vérifier si le token existe
@@ -46,33 +48,18 @@ class ModifierStatutJoueur {
         try {
             $response = file_get_contents($this->apiUrl, false, $context);
             
-            // Si la requête échoue
-            if ($response === false) {
-                return false;
-            }
-            
-            // Extraction de la partie JSON de la réponse (au cas où il y aurait du texte avant)
-            $jsonStartPos = strpos($response, '{');
-            if ($jsonStartPos !== false) {
-                $jsonResponse = substr($response, $jsonStartPos);
-            } else {
-                return false;
-            }
-            
-            // Décodage de la partie JSON de la réponse
-            $result = json_decode($jsonResponse, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                return false;
-            }
+            // Vérification de la réponse avec checkApiResponse
+            $result = checkApiResponse($response);
             
             // Vérification du succès
             if (isset($result['status']) && $result['status'] === 'success') {
                 return true;
-            } else {
-                return false;
             }
             
+            return false;
+            
         } catch (Exception $e) {
+            error_log("Erreur lors de la modification du statut du joueur : " . $e->getMessage());
             return false;
         }
     }

@@ -1,5 +1,6 @@
 <?php
-
+require_once '../vue/session/session_timeout.php';
+require_once 'check_auth.php';
 
 class RechercheJoueur {
     private $critere;
@@ -10,7 +11,7 @@ class RechercheJoueur {
     {
         $this->critere = $critere;
         $this->motcle = $motcle;
-        $this->apiUrl = "http://localhost/club_basket_back-end/back-end/endpoint/JoueurEndpoint.php";
+        $this->apiUrl = "https://clubbasketbackend.alwaysdata.net/back-end/endpoint/JoueurEndpoint.php";
     }
 
     public function executer() {
@@ -44,33 +45,18 @@ class RechercheJoueur {
         try {
             $response = file_get_contents($url, false, $context);
             
-            // Si la requête échoue
-            if ($response === false) {
-                return [];
-            }
-            
-            // Extraction de la partie JSON de la réponse (au cas où il y aurait du texte avant)
-            $jsonStartPos = strpos($response, '{');
-            if ($jsonStartPos !== false) {
-                $jsonResponse = substr($response, $jsonStartPos);
-            } else {
-                return [];
-            }
-            
-            // Décodage de la partie JSON de la réponse
-            $result = json_decode($jsonResponse, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                return [];
-            }
+            // Vérification de la réponse avec checkApiResponse
+            $result = checkApiResponse($response);
             
             // Vérification du succès et récupération des données
             if (isset($result['status']) && $result['status'] === 'success' && isset($result['data'])) {
                 return $result['data'];
-            } else {
-                return [];
             }
             
+            return [];
+            
         } catch (Exception $e) {
+            error_log("Erreur lors de la recherche de joueur : " . $e->getMessage());
             return [];
         }
     }
