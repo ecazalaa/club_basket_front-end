@@ -1,8 +1,7 @@
 <?php
 
-
-require_once 'session/session.php';
-require_once 'session/session_timeout.php';
+require_once '../controleur/check_auth.php';
+checkAuth();
 require_once '../controleur/ObtenirTousLesMatchsAVenir.php';
 
 $matchs = new ObtenirTousLesMatchsAVenir();

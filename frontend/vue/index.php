@@ -1,6 +1,6 @@
 <?php
-require_once 'session/session.php';
-require_once 'session/session_timeout.php';
+require_once '../controleur/check_auth.php';
+checkAuth();
 ?>
 
 <!DOCTYPE html>
@@ -242,7 +242,7 @@ require_once 'session/session_timeout.php';
 
 <header>
     <img src="public/logoClub.png" alt="Club de Basket Labège Logo">
-    <h1>Bienvenue au Club de Basket de Labège</h1>
+    <h1>Bienvenue <?php echo htmlspecialchars($_SESSION['user_prenom'] . ' ' . $_SESSION['user_nom']); ?></h1>
 </header>
 
 <nav>

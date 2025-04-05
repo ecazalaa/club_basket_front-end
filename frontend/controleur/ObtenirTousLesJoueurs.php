@@ -1,4 +1,5 @@
 <?php
+require_once 'check_auth.php';
 
 class ObtenirTousLesJoueurs
 {
@@ -7,7 +8,7 @@ class ObtenirTousLesJoueurs
     // Constructeur : Initialise l'URL de l'API
     public function __construct()
     {
-        $this->apiUrl = "http://localhost/club_basket_back-end/back-end/endpoint/JoueurEndpoint.php";
+        $this->apiUrl = "https://clubbasketbackend.alwaysdata.net/back-end/endpoint/JoueurEndpoint.php";
     }
 
     // Retourne tous les joueurs via l'API
@@ -39,34 +40,18 @@ class ObtenirTousLesJoueurs
         // Exécution de la requête
         try {
             $response = file_get_contents($this->apiUrl, false, $context);
+            $result = checkApiResponse($response);
             
-            // Si la requête échoue
-            if ($response === false) {
-                return [];
-            }
-            
-            // Extraction de la partie JSON de la réponse (au cas où il y aurait du texte avant)
-            $jsonStartPos = strpos($response, '{');
-            if ($jsonStartPos !== false) {
-                $jsonResponse = substr($response, $jsonStartPos);
-            } else {
-                return [];
-            }
-            
-            // Décodage de la partie JSON de la réponse
-            $result = json_decode($jsonResponse, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                return [];
-            }
-            
-            // Vérification du succès et récupération des données
-            if (isset($result['status']) && $result['status'] === 'success' && isset($result['data'])) {
+            // Vérifier si la réponse contient les données des joueurs
+            if (isset($result['data']) && is_array($result['data'])) {
                 return $result['data'];
-            } else {
-                return [];
             }
+            
+            // Si pas de données ou format incorrect, retourner un tableau vide
+            return [];
             
         } catch (Exception $e) {
+            error_log("Erreur lors de la récupération des joueurs : " . $e->getMessage());
             return [];
         }
     }

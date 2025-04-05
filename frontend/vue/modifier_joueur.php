@@ -2,9 +2,8 @@
 <?php
 
 
-require_once 'session/session.php';
-require_once 'session/session_timeout.php';
-require_once '../modele/Joueur.php';
+require_once '../controleur/check_auth.php';
+checkAuth();
 require_once '../controleur/RechercheJoueur.php';
 
 // Récupérer le numéro de licence du joueur à modifier
@@ -112,9 +111,6 @@ if (!empty($licence)) {
 
 
 <?php
-require_once '../config/config.php';
-require_once '../modele/Joueur.php';
-require_once '../modele/JoueurDAO.php';
 require_once '../controleur/ModifieJoueur.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -126,8 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nvnumLicence = isset($_POST['numLicence']) ? htmlspecialchars($_POST['numLicence']) : '';
 
     if (!empty($nvnom) && !empty($nvprenom) && !empty($nvdateNaissance) && !empty($nvtaille) && !empty($nvpoids) && !empty($nvnumLicence)) {
-        $joueurModif = new Joueur($nvnom, $nvprenom, $nvdateNaissance, $nvtaille, $nvpoids, $nvnumLicence);
-        $modifJ = new ModifieJoueur($joueurModif);
+        $modifJ = new ModifieJoueur($nvnom, $nvprenom, $nvdateNaissance, $nvtaille, $nvpoids, $nvnumLicence);
         $req = $modifJ->executer();
 
         if ($req) {

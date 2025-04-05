@@ -51,13 +51,13 @@
 <div class="table-container">
 <?php
 
-require_once 'session/session.php';
-require_once 'session/session_timeout.php';
+require_once '../controleur/check_auth.php';
+checkAuth();
 require_once '../controleur/ObtenirTousLesJoueurs.php';
 require_once '../controleur/ModifierStatutJoueur.php';
 
-$joueurs = new ObtenirTousLesJoueurs();
-$joueurs = $joueurs->executer();
+$controleur = new ObtenirTousLesJoueurs();
+$joueurs = $controleur->executer();
 
 function getDraggablePlayers()
 {
