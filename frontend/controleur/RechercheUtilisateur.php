@@ -10,7 +10,7 @@ class RechercheUtilisateur {
         $this->nom = $nom;
         $this->prenom = $prenom;
         $this->mdp = $mdp;
-        $this->apiUrl = "http://localhost:8888/siteBasketV2API/club_basket_apiAuth/authapi.php"; // Ajustez selon votre configuration
+        $this->apiUrl = "https://apiauthclubbasket.alwaysdata.net/club_basket_apiAuth/authapi.php"; // Ajustez selon votre configuration
         
     }
 
